@@ -20,7 +20,7 @@
                 </fieldset>
                 <div><input class="btn btn-default" type="submit" name="submit" value="Login" /></div>
             </form>
-            <p><a href="<?php echo BASE_URL; ?>Users/forgot">Forgot password?</a></p>
+            <p><a href="<?php echo BASE_URL; ?>forgot">Forgot password?</a></p>
             <hr>
 
         </div>

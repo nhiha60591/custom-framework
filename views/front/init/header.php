@@ -48,11 +48,11 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="need_help"><a href="#">Need Help?</a></li>
                     <?php if( !isset( $userlogin ) or sizeof( $userlogin ) <= 0) : ?>
-                        <li class="header_login"><a href="<?php echo BASE_URL; ?>Users/login">Log in</a></li>
-                        <li class="header_signup"><a href="<?php echo BASE_URL; ?>Users/singup">Sign up</a></li>
+                        <li class="header_login"><a href="<?php echo BASE_URL; ?>login">Log in</a></li>
+                        <li class="header_signup"><a href="<?php echo BASE_URL; ?>singup">Sign up</a></li>
                     <?php else: ?>
                         <li class="header_name"><a href="<?php echo BASE_URL; ?>Dashboard">Hi, <strong><?=$userlogin['first_name']?></strong></a></li>
-                        <li class="header_logout"><a href="<?php echo BASE_URL; ?>Users/logout">Logout</a></li>
+                        <li class="header_logout"><a href="<?php echo BASE_URL; ?>logout">Logout</a></li>
                     <?php endif; ?>
                 </ul>
 

@@ -33,7 +33,7 @@ class Controller {
         $dis['page_title'] = $this->page_title;
         $dis['site_title'] = $this->site_title;
         $admin_login = $this->session->userdata('login');
-        $dis['userlogin'] = $admin_login;
+        $dis['userlogin'] = Users_Model::find_by_user_id( $admin_login['user_id'] );
 
         if (!isset($dis['menu_active']) || empty($dis['menu_active'])) {
             $dis['menu_active'] = $this->menu_active;

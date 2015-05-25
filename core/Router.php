@@ -20,8 +20,30 @@ class Router {
 
     public function parseUrl(){
         $uri = '';
+        $url = array();
         if( isset( $_GET['url'] ) ){
             $uri = filter_var( rtrim( $_GET['url'], "/" ), FILTER_SANITIZE_URL );
+            $url = explode( "/", filter_var( rtrim( $_GET['url'], "/" ), FILTER_SANITIZE_URL ));
+        }
+        if( sizeof( $url ) >=2){
+            if( file_exists( ABSPATH."controller/".$url[0].".php" ) || file_exists( ABSPATH."controller/".ucfirst($url[0]).".php" ) ){
+                $this->controller = ucfirst($url[0]);
+                $this->method = $url[1];
+                $this->include = "controller/".$this->controller.".php";
+                unset($url[0]);
+                unset($url[1]);
+            }elseif(file_exists( ABSPATH."controller/".$url[0]."/".$url[1].".php" ) || file_exists( ABSPATH."controller/".$url[0]."/".ucfirst($url[1]).".php" )){
+                $this->controller = ucfirst($url[1]);
+                $this->include = "controller/".$url[0]."/".$this->controller.".php";
+                $this->method = $url[2];
+                unset($url[0]);
+                unset($url[1]);
+                unset($url[2]);
+            }else{
+                $this->include = "controller/".$this->controller.".php";
+            }
+            $param = $url ? array_values( $url ) : array();
+            $this->param = array_merge($this->param, $param);
         }
         include(ABSPATH."config/router.php");
         $this->routers = isset($route) && !empty($route) ? $route : $this->routers;
@@ -50,6 +72,7 @@ class Router {
                 $this->param = array_merge($this->param, $param);
             }
         }
+        echo $this->controller;
         if(empty($this->include)){
             $this->include = "controller/".$this->controller.".php";
         }

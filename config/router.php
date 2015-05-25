@@ -6,8 +6,7 @@
  * Time: 6:31 AM
  */
 $route = array();
-$route['login'] = 'Users/login';
-$route['singup'] = 'Users/singup';
-$route['logout'] = 'Users/logout';
-$route['forgot'] = 'Users/forgot';
-$route['admin/(:any)'] = '';
+$route['login']                     = 'Users/login';
+$route['singup']                    = 'Users/singup';
+$route['logout']                    = 'Users/logout';
+$route['forgot']                    = 'Users/forgot';

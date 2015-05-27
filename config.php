@@ -1,6 +1,6 @@
 <?php
 define( 'ABSPATH', rtrim(dirname(__FILE__),"/") . '/' );
-define( 'BASE_URL', "http://gregfurlong.ie.local/" );
+define( 'BASE_URL', "http://w.gregfurlong.ie/" );
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define('DB_NAME', 'g560072_warbble');
@@ -20,3 +20,4 @@ define('DB_CHARSET', 'utf8');
 /** The Database Collate type. Don't change this if in doubt. */
 define('DB_COLLATE', '');
 define('FACEBOOK_SDK_V4_SRC_DIR', ABSPATH.'includes/plugins/Facebook/');
+include(ABSPATH."autoload.php");

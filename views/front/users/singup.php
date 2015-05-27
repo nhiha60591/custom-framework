@@ -2,6 +2,12 @@
     <div class="tagline_wrap">
         <div class="form-wrap">
             <h1>Sign Up</h1>
+            <a class="btn btn-block btn-social btn-facebook" href="<?php echo BASE_URL; ?>login/facebook">
+                <i class="fa fa-facebook"></i> Sign in with facebook
+            </a>
+            <a class="btn btn-block btn-social btn-twitter" href="<?php echo BASE_URL; ?>login/twitter">
+                <i class="fa fa-twitter"></i> Sign in with Twitter
+            </a>
             <?php if(!empty($mes)) echo $mes; ?>
             <form action="" method="post" id="singup">
                 <fieldset>

@@ -5,10 +5,24 @@
  * Date: 5/14/2015
  * Time: 6:28 AM
  */
+//require 'functions.php';
+use Facebook\FacebookSession;
+use Facebook\FacebookRedirectLoginHelper;
+use Facebook\FacebookRequest;
+use Facebook\FacebookResponse;
+use Facebook\FacebookSDKException;
+use Facebook\FacebookRequestException;
+use Facebook\FacebookAuthorizationException;
+use Facebook\GraphObject;
+use Facebook\Entities\AccessToken;
+use Facebook\HttpClients\FacebookCurlHttpClient;
+use Facebook\HttpClients\FacebookHttpable;
 class Users extends Controller{
     public function __construct(){
         parent::__construct();
         $this->load->model('Users_Model');
+        // init app with app id and secret
+        FacebookSession::setDefaultApplication( '638909079579449','d4066e645f9db3d0fa962f0c6e0096c7' );
     }
     public function index()
     {
@@ -16,8 +30,44 @@ class Users extends Controller{
         $dis['view'] = 'init/home';
         $this->view_front( $dis );
     }
-    public function login(){
+    public function login( $social = NULL ){
         $dis = array();
+        if( $social != NULL ){
+            switch( $social ){
+                case "facebook":
+                    $helper = new FacebookRedirectLoginHelper('http://w.gregfurlong.ie/login/facebook/' );
+                    $session = $helper->getSessionFromRedirect();
+                    // see if we have a session
+                    if ( isset( $session ) ) {
+                        // graph api request for user data
+                        $request = new FacebookRequest( $session, 'GET', '/me' );
+                        $response = $request->execute();
+                        // get response
+                        $graphObject = $response->getGraphObject();
+                        echo "<pre>";
+                        print_r($graphObject);
+                        $fbid = $graphObject->getProperty('id');              // To Get Facebook ID
+                        $fbfullname = $graphObject->getProperty('name'); // To Get Facebook full name
+                        $femail = $graphObject->getProperty('email');    // To Get Facebook email ID
+                        //redirect( BASE_URL );
+                    } else {
+                        $permissions = array(
+                            'publish_actions',
+                            'email',
+                            'user_location',
+                            'user_birthday',
+                            'user_likes',
+                            'public_profile',
+                            'user_friends'
+                        );
+                        $loginUrl = $helper->getLoginUrl($permissions);
+                        header("Location: ".$loginUrl);
+                    }
+                    break;
+                case "twitter":
+                    break;
+            }
+        }
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $users = Users_Model::find_by_email_and_pass_and_active($_POST['email'], MD5($_POST['password']), NULL);
             if( sizeof( $users ) > 0 ){
@@ -55,7 +105,7 @@ class Users extends Controller{
                 $user->registration_date = date("Y-m-d H:i:s");
                 $user->save();
                 $body = "Thank you for registering izCMS page. An activation email has been sent to the email address you provided. Session you click the link to activate your account \n\n ";
-                $body .= BASE_URL . "Users/active/".str_replace("'", "", $active);
+                $body .= BASE_URL . "active/".str_replace("'", "", $active);
                 if(mail( $_POST['email'], 'Activate account at izCMS', $body, 'FROM: localhost')) {
                     $message = "<p class='success'>Your account has been successfully registered. Email has been sent to your address. You must click the link to activate your account before using it.</p>";
                 } else {

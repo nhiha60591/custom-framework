@@ -10,3 +10,4 @@ $route['login']                     = 'Users/login';
 $route['singup']                    = 'Users/singup';
 $route['logout']                    = 'Users/logout';
 $route['forgot']                    = 'Users/forgot';
+$route['Dashboard']                 = 'Dashboard/index';

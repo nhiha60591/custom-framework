@@ -41,9 +41,10 @@ class Router {
                 unset($url[2]);
             }else{
                 $this->include = "controller/".$this->controller.".php";
+                unset($url);
             }
             $param = $url ? array_values( $url ) : array();
-            $this->param = array_merge($this->param, $param);
+            $this->param = $param;
         }
         include(ABSPATH."config/router.php");
         $this->routers = isset($route) && !empty($route) ? $route : $this->routers;
@@ -68,11 +69,12 @@ class Router {
                 }else{
                     $this->include = "controller/".$this->controller.".php";
                 }
-                $param = $s ? array_values( $s ) : array();
-                $this->param = array_merge($this->param, $param);
+                $pr = explode( "/", rtrim($uri,"/"));
+                unset($pr[0]);
+                $param = $pr ? array_values( $pr ) : array();
+                $this->param = $param;
             }
         }
-        echo $this->controller;
         if(empty($this->include)){
             $this->include = "controller/".$this->controller.".php";
         }

@@ -2,6 +2,12 @@
     <div class="tagline_wrap">
         <div class="form-wrap">
             <h1>Login</h1>
+                <a class="btn btn-block btn-social btn-facebook" href="<?php echo BASE_URL; ?>login/facebook">
+                   <i class="fa fa-facebook"></i> Sign in with facebook
+                </a>
+                <a class="btn btn-block btn-social btn-twitter" href="<?php echo BASE_URL; ?>login/twitter">
+                    <i class="fa fa-twitter"></i> Sign in with Twitter
+                </a>
             <?php if(!empty($message)) echo $message; ?>
             <form id="login" action="" method="post">
                 <fieldset>
@@ -20,7 +26,7 @@
                 </fieldset>
                 <div><input class="btn btn-default" type="submit" name="submit" value="Login" /></div>
             </form>
-            <p><a href="<?php echo BASE_URL; ?>forgot">Forgot password?</a></p>
+            <p><a href="<?php echo BASE_URL; ?>Users/forgot">Forgot password?</a></p>
             <hr>
 
         </div>

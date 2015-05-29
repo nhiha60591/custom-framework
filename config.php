@@ -1,6 +1,6 @@
 <?php
 define( 'ABSPATH', rtrim(dirname(__FILE__),"/") . '/' );
-define( 'BASE_URL', "http://gregfurlong.ie.local/" );
+define( 'BASE_URL', "http://localhost/custom-framework/" );
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define('DB_NAME', 'g560072_warbble');

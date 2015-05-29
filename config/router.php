@@ -10,3 +10,5 @@ $route['login']                     = 'Users/login';
 $route['singup']                    = 'Users/singup';
 $route['logout']                    = 'Users/logout';
 $route['forgot']                    = 'Users/forgot';
+$route['myaccount']                    = 'Users/myaccount';
+$route['Dashboard']                 = 'Dashboard/index';

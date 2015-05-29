@@ -5,10 +5,24 @@
  * Date: 5/14/2015
  * Time: 6:28 AM
  */
+//require 'functions.php';
+use Facebook\FacebookSession;
+use Facebook\FacebookRedirectLoginHelper;
+use Facebook\FacebookRequest;
+use Facebook\FacebookResponse;
+use Facebook\FacebookSDKException;
+use Facebook\FacebookRequestException;
+use Facebook\FacebookAuthorizationException;
+use Facebook\GraphObject;
+use Facebook\Entities\AccessToken;
+use Facebook\HttpClients\FacebookCurlHttpClient;
+use Facebook\HttpClients\FacebookHttpable;
 class Users extends Controller{
     public function __construct(){
         parent::__construct();
         $this->load->model('Users_Model');
+        // init app with app id and secret
+        FacebookSession::setDefaultApplication( '638909079579449','d4066e645f9db3d0fa962f0c6e0096c7' );
     }
     public function index()
     {
@@ -16,8 +30,81 @@ class Users extends Controller{
         $dis['view'] = 'init/home';
         $this->view_front( $dis );
     }
-    public function login(){
+    public function login( $social = NULL ){
         $dis = array();
+        if( $social != NULL ){
+            switch( $social ){
+                case "facebook":
+                    $helper = new FacebookRedirectLoginHelper('http://w.gregfurlong.ie/login/facebook/' );
+                    $session = $helper->getSessionFromRedirect();
+                    // see if we have a session
+                    if ( isset( $session ) ) {
+                        // graph api request for user data
+                        $request = new FacebookRequest( $session, 'GET', '/me' );
+                        $response = $request->execute();
+                        // get response
+                        $graphObject = $response->getGraphObject();
+                        $user = Users_Model::find_by_email($graphObject->getProperty('email'));
+                        if(sizeof($user)<=0){
+                            $user = new Users_Model();
+                        }
+                        $user->first_name = $graphObject->getProperty('first_name');
+                        $user->last_name = $graphObject->getProperty('last_name');
+                        $user->email = $graphObject->getProperty('email');
+                        $user->registration_date = date("Y-m-d H:i:s");
+                        $user->save();
+                        /**
+                         * Update social meta key
+                         */
+                        $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_type','facebook');
+                        if( sizeof($UserMeta)<=0){
+                            $UserMeta = new Usermetum();
+                        }
+                        $UserMeta->user_id = $user->user_id;
+                        $UserMeta->meta_key = 'social_type';
+                        $UserMeta->meta_value = 'facebook';
+                        $UserMeta->save();
+
+                        /**
+                         * Update social meta value
+                         */
+
+                        $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_id',$graphObject->getProperty('id') );
+                        if( sizeof($UserMeta)<=0){
+                            $UserMeta = new Usermetum();
+                        }
+                        $UserMeta->user_id = $user->user_id;
+                        $UserMeta->meta_key = 'social_id';
+                        $UserMeta->meta_value = $graphObject->getProperty('id');
+                        $UserMeta->save();
+                        $userdata = array(
+                            'user_id' => $user->user_id,
+                            'email' => $graphObject->getProperty('email'),
+                            'user_level' => 1,
+                            'first_name' => $graphObject->getProperty('first_name'),
+                            'last_name' => $graphObject->getProperty('last_name'),
+                        );
+                        $this->session->set_userdata('login', $userdata);
+
+                        redirect( BASE_URL."myaccount" );
+                    } else {
+                        $permissions = array(
+                            'publish_actions',
+                            'email',
+                            'user_location',
+                            'user_birthday',
+                            'user_likes',
+                            'public_profile',
+                            'user_friends'
+                        );
+                        $loginUrl = $helper->getLoginUrl($permissions);
+                        header("Location: ".$loginUrl);
+                    }
+                    break;
+                case "twitter":
+                    break;
+            }
+        }
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $users = Users_Model::find_by_email_and_pass_and_active($_POST['email'], MD5($_POST['password']), NULL);
             if( sizeof( $users ) > 0 ){
@@ -29,7 +116,7 @@ class Users extends Controller{
                     'last_name' => $users->last_name,
                 );
                 $this->session->set_userdata('login', $userdata);
-                redirect( BASE_URL."Dashboard");
+                redirect( BASE_URL."myaccount");
             }else{
                 $dis['message'] = '<p class="error">The email or password do not match those on file. Or you have not activated your account.</p>';
             }
@@ -55,7 +142,7 @@ class Users extends Controller{
                 $user->registration_date = date("Y-m-d H:i:s");
                 $user->save();
                 $body = "Thank you for registering izCMS page. An activation email has been sent to the email address you provided. Session you click the link to activate your account \n\n ";
-                $body .= BASE_URL . "Users/active/".str_replace("'", "", $active);
+                $body .= BASE_URL . "active/".str_replace("'", "", $active);
                 if(mail( $_POST['email'], 'Activate account at izCMS', $body, 'FROM: localhost')) {
                     $message = "<p class='success'>Your account has been successfully registered. Email has been sent to your address. You must click the link to activate your account before using it.</p>";
                 } else {
@@ -135,7 +222,7 @@ Your friends</p>";
             $user = Users_Model::find_by_user_id($admin_login['user_id']);
             $dis['user'] = $user;
         }else{
-            redirect(BASE_URL."Users/login");
+            redirect(BASE_URL."login");
         }
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             if( isset( $_FILES['avatar'] )) {

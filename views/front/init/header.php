@@ -9,6 +9,7 @@
     <link href="<?php echo BASE_URL; ?>assets/front/css/bootstrap.min.css" rel="stylesheet">
     <!-- Optional theme -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/front/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/front/css/bootstrap-social.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/front/style.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/front/css/style.css"> <!-- Gem style -->
 
@@ -51,7 +52,7 @@
                         <li class="header_login"><a href="<?php echo BASE_URL; ?>login">Log in</a></li>
                         <li class="header_signup"><a href="<?php echo BASE_URL; ?>singup">Sign up</a></li>
                     <?php else: ?>
-                        <li class="header_name"><a href="<?php echo BASE_URL; ?>Dashboard">Hi, <strong><?=$userlogin->first_name?></strong></a></li>
+                        <li class="header_name"><a href="<?php echo BASE_URL; ?>Dashboard">Hi, <strong><?=$userlogin['first_name']?></strong></a></li>
                         <li class="header_logout"><a href="<?php echo BASE_URL; ?>logout">Logout</a></li>
                     <?php endif; ?>
                 </ul>

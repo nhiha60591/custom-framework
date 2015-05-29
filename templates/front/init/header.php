@@ -9,6 +9,7 @@
     <link href="<?php echo BASE_URL; ?>assets/front/css/bootstrap.min.css" rel="stylesheet">
     <!-- Optional theme -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/front/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/front/css/bootstrap-social.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/front/style.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/front/css/style.css"> <!-- Gem style -->
 
